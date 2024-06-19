@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'parallel'
 require_relative '../factbase'
 require_relative 'syntax'
 require_relative 'fact'
@@ -55,7 +56,7 @@ class Factbase::Query
     return to_enum(__method__, params) unless block_given?
     term = Factbase::Syntax.new(@query).to_term
     yielded = 0
-    @maps.each do |m|
+    Parallel.each(@maps, in_threads: Parallel.processor_count) do |m|
       extras = {}
       f = Factbase::Fact.new(@mutex, m)
       params = params.transform_keys(&:to_s) if params.is_a?(Hash)
