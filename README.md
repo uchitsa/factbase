@@ -167,3 +167,43 @@ bundle exec rake
 ```
 
 If it's clean and you don't see any error messages, submit your pull request.
+
+## Benchmark
+
+This is the result of the benchmark:
+
+<!-- benchmark_begin -->
+```text
+                                                                   user
+insert 20000 facts                                             0.655022
+export 20000 facts                                             0.023878
+import 410584 bytes (20000 facts)                              0.023439
+insert 10 facts                                                0.046256
+query 10 times w/txn                                           2.172432
+query 10 times w/o txn                                         0.044140
+modify 10 attrs w/txn                                          1.983502
+delete 10 facts w/txn                                          1.163404
+(and (eq what 'issue-was-closed') (exists... -> 200            2.289591
+(and (eq what 'issue-was-closed') (exists... -> 200/txn        1.076485
+(and (eq what 'issue-was-closed') (exists... -> zero           2.784211
+(and (eq what 'issue-was-closed') (exists... -> zero/txn       1.260570
+(gt time '2024-03-23T03:21:43Z')                               0.276581
+(gt cost 50)                                                   0.363641
+(eq title 'Object Thinking 5000')                              0.047481
+(and (eq foo 42.998) (or (gt bar 200) (absent z...             0.053726
+(and (exists foo) (not (exists blue)))                         1.059858
+(eq id (agg (always) (max id)))                                0.634234
+(join "c<=cost,b<=bar" (eq id (agg (always) (ma...             1.354021
+(and (eq what "foo") (join "w<=what" (and (eq i...             7.034495
+delete!                                                        0.175090
+Taped.append() x50000                                          0.027507
+Taped.each() x125                                              1.437881
+Taped.delete_if() x375                                         1.038357
+```
+
+The results were calculated in [this GHA job][benchmark-gha]
+on 2025-08-10 at 22:28,
+on Linux with 4 CPUs.
+<!-- benchmark_end -->
+
+[benchmark-gha]: https://github.com/uchitsa/factbase/actions/runs/16867047455
